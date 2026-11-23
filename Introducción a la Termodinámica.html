@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Introducción a la Termodinámica</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;700;800&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F2F7F9;--surf:#fff;--ink:#10242E;--mute:#4D6672;--line:#CBDAE1;--cold:#1769AA;--hot:#C92E25;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0B1A22;--surf:#12262F;--ink:#E6F1F5;--mute:#9DB6C1;--line:#27414D;--cold:#5FB0F0;--hot:#FF6B5E;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0B1A22;--surf:#12262F;--ink:#E6F1F5;--mute:#9DB6C1;--line:#27414D;--cold:#5FB0F0;--hot:#FF6B5E;color-scheme:dark}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.6 "IBM Plex Sans",system-ui,sans-serif}
+h1,h2,h3{font-family:Sora,"Segoe UI",system-ui,sans-serif;line-height:1.15;margin:0}
+.w{max-width:1080px;margin:0 auto;padding:0 20px}
+header{padding:48px 0 28px}
+h1{font-size:clamp(2rem,6vw,3.6rem);font-weight:800;max-width:15ch;letter-spacing:-.02em}
+header p{max-width:60ch;color:var(--mute);font-size:1.1rem;margin:14px 0 0}
+section{padding:36px 0;border-top:1px solid var(--line)}
+h2{font-size:clamp(1.4rem,3.5vw,2rem);font-weight:700;margin-bottom:6px}
+.lead{color:var(--mute);max-width:62ch;margin:0 0 22px}
+.sim{display:grid;gap:20px;grid-template-columns:minmax(0,1fr)}
+@media(min-width:820px){.sim{grid-template-columns:minmax(0,1.15fr) minmax(0,1fr)}}
+.panel{background:var(--surf);border:1px solid var(--line);border-radius:14px;padding:18px}
+.stage{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+#cup{width:120px;flex:none}
+.reads{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 16px;flex:1;min-width:200px}
+.reads b{display:block;font:700 1.5rem Sora,system-ui,sans-serif}
+.reads span{font-size:.85rem;color:var(--mute)}
+canvas{width:100%;height:230px;display:block;margin-top:12px}
+label{display:block;font-weight:500;margin-top:14px}
+label output{float:right;font-weight:600;color:var(--cold)}
+input[type=range]{width:100%;accent-color:var(--cold)}
+select,button{font:inherit;padding:9px 12px;border-radius:8px;border:1px solid var(--line);background:var(--surf);color:var(--ink)}
+select{width:100%;margin-top:4px}
+.btns{display:flex;gap:8px;margin-top:16px;flex-wrap:wrap}
+button{cursor:pointer;font-weight:600}
+button.p{background:var(--cold);border-color:var(--cold);color:#fff}
+:is(button,select,input):focus-visible{outline:3px solid var(--hot);outline-offset:2px}
+table{border-collapse:collapse;width:100%;font-size:.92rem;margin-top:14px}
+td,th{padding:7px 4px;border-bottom:1px solid var(--line);text-align:left}
+th{color:var(--mute);font-weight:500}
+.cols{display:grid;gap:28px;grid-template-columns:minmax(0,1fr)}
+@media(min-width:760px){.cols{grid-template-columns:repeat(2,minmax(0,1fr))}}
+dl{margin:0}dt{font:700 1.05rem Sora,system-ui,sans-serif;margin-top:14px}dd{margin:2px 0 0;color:var(--mute)}
+.eq{font:700 1.6rem Sora,system-ui,sans-serif;color:var(--hot);margin:6px 0}
+.conv{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:14px;text-align:center}
+.conv b{display:block;font:700 1.6rem Sora,system-ui,sans-serif}
+.conv span{color:var(--mute);font-size:.85rem}
+.bar{display:grid;grid-template-columns:90px 1fr 52px;gap:10px;align-items:center;margin:8px 0;font-size:.92rem}
+.bar i{display:block;height:14px;border-radius:7px;background:var(--cold)}
+.laws{display:grid;gap:0}
+.law{display:grid;grid-template-columns:minmax(0,1fr);gap:4px 24px;padding:20px 0;border-bottom:1px solid var(--line)}
+@media(min-width:760px){.law{grid-template-columns:220px minmax(0,1fr) minmax(0,1fr)}}
+.law h3{font-size:1.2rem}.law .eq{font-size:1.25rem;margin:0}
+.law p{margin:0;color:var(--mute)}.law em{color:var(--ink);font-style:normal;font-weight:600}
+footer{padding:28px 0 40px;color:var(--mute);font-size:.9rem;border-top:1px solid var(--line)}
+</style></head><body><div class="w">
+<header><h1>Termodinámica: por qué se enfría tu café</h1>
+<p>La termodinámica estudia cómo se transforma y se mueve la energía. Prueba el simulador y después recorre las ideas que lo explican.</p></header>
+
+<section id="sim" style="border-top:0;padding-top:0"><h2>Simulador: enfriamiento de una bebida</h2>
+<p class="lead">Una bebida caliente pierde calor hacia el ambiente hasta llegar al equilibrio térmico. Cambia el recipiente y observa cuánto tarda en estar tibia.</p>
+<div class="sim"><div class="panel">
+<div class="stage"><svg id="cup" viewBox="0 0 120 140" role="img" aria-label="Taza con la bebida">
+<g id="steam" stroke="var(--mute)" stroke-width="3" fill="none" stroke-linecap="round"><path d="M40 28c-8-8 8-14 0-24"/><path d="M60 28c-8-8 8-14 0-24"/><path d="M80 28c-8-8 8-14 0-24"/></g>
+<clipPath id="cl"><path d="M22 40h66v50a20 20 0 0 1-20 20H42a20 20 0 0 1-20-20z"/></clipPath>
+<rect id="liq" x="20" y="48" width="70" height="70" clip-path="url(#cl)" fill="#c92e25"/>
+<path d="M22 40h66v50a20 20 0 0 1-20 20H42a20 20 0 0 1-20-20z" fill="none" stroke="var(--ink)" stroke-width="4"/>
+<path d="M88 52h8a12 12 0 0 1 0 28h-8" fill="none" stroke="var(--ink)" stroke-width="4"/></svg>
+<div class="reads" aria-live="polite"><div><b id="rT">—</b><span>Temperatura</span></div><div><b id="rt">—</b><span>Tiempo transcurrido</span></div>
+<div><b id="rQ">—</b><span>Calor cedido (kJ)</span></div><div><b id="rP">—</b><span>Potencia de pérdida (W)</span></div></div></div>
+<canvas id="ch" role="img" aria-label="Gráfica de temperatura contra tiempo"></canvas>
+<p style="margin:8px 0 0;color:var(--mute);font-size:.88rem">Ley de enfriamiento de Newton: <b>T(t) = Tₐ + (T₀ − Tₐ)·e<sup>−kt</sup></b>. La línea punteada marca 60 °C, una bebida ya tomable.</p></div>
+<div class="panel">
+<label for="sel">Recipiente</label><select id="sel"><option value="vidrio">Vaso de vidrio</option><option value="ceramica" selected>Taza de cerámica</option><option value="espuma">Vaso de espuma con tapa</option><option value="termo">Termo de acero al vacío</option></select>
+<label for="iT">Temperatura inicial <output id="oT"></output></label><input id="iT" type="range" min="50" max="95" value="85">
+<label for="iA">Temperatura ambiente <output id="oA"></output></label><input id="iA" type="range" min="0" max="40" value="22">
+<label for="iV">Volumen <output id="oV"></output></label><input id="iV" type="range" min="100" max="500" step="10" value="250">
+<label for="sp">Velocidad</label><select id="sp"><option value="1">1 min por segundo</option><option value="10" selected>10 min por segundo</option><option value="60">1 hora por segundo</option></select>
+<div class="btns"><button class="p" id="go">Iniciar</button><button id="rs">Reiniciar</button></div>
+<table><tr><th>Recipiente</th><th>Hasta 60 °C</th></tr><tbody id="cmp"></tbody></table></div></div></section>
+
+<section><h2>Definiciones básicas</h2><div class="cols"><dl>
+<dt>Sistema</dt><dd>La porción del universo que estudiamos, como la bebida.</dd>
+<dt>Alrededores y frontera</dt><dd>Todo lo demás, separado del sistema por una frontera real o imaginaria, como la pared de la taza.</dd>
+<dt>Temperatura</dt><dd>Medida de la energía cinética promedio de las partículas.</dd>
+<dt>Calor (Q)</dt><dd>Energía que pasa de un cuerpo a otro solo por diferencia de temperatura.</dd></dl>
+<dl><dt>Sistema abierto, cerrado y aislado</dt><dd>Abierto: intercambia materia y energía. Cerrado: solo energía. Aislado: ninguna de las dos.</dd>
+<dt>Energía interna (U)</dt><dd>Suma de las energías de todas las partículas del sistema.</dd>
+<dt>Equilibrio térmico</dt><dd>Dos cuerpos en contacto dejan de intercambiar calor porque tienen la misma temperatura.</dd>
+<dt>Trabajo (W)</dt><dd>Energía transferida mediante una fuerza que mueve algo, como un gas que empuja un pistón.</dd></dl></div></section>
+
+<section><h2>Escalas de temperatura</h2><p class="lead">Mueve el control: las tres escalas describen la misma temperatura.</p>
+<input id="cv" type="range" min="-273" max="150" value="25" aria-label="Temperatura en grados Celsius">
+<div class="conv"><div><b id="cC">25</b><span>°C Celsius</span></div><div><b id="cK">298.15</b><span>K Kelvin</span></div><div><b id="cF">77</b><span>°F Fahrenheit</span></div></div>
+<table><tr><th>Punto de referencia</th><th>°C</th><th>K</th><th>°F</th></tr>
+<tr><td>Cero absoluto</td><td>−273.15</td><td>0</td><td>−459.67</td></tr><tr><td>Agua se congela</td><td>0</td><td>273.15</td><td>32</td></tr>
+<tr><td>Agua hierve (1 atm)</td><td>100</td><td>373.15</td><td>212</td></tr></table>
+<p class="lead" style="margin-top:12px">K = °C + 273.15 &nbsp;·&nbsp; °F = °C × 9/5 + 32. El kelvin no tiene valores negativos: parte del cero absoluto.</p></section>
+
+<section><h2>Capacidad calorífica</h2><div class="cols"><div>
+<p class="lead">Cuánto calor necesita una sustancia para subir su temperatura. La capacidad calorífica específica (c) es ese calor por gramo y por grado.</p>
+<div class="eq">Q = m · c · ΔT</div>
+<p class="lead">Calentar 250 g de agua de 22 °C a 85 °C: Q = 250 × 4.186 × 63 ≈ <b>66 kJ</b>. El agua guarda mucho calor, por eso tu bebida tarda en enfriarse.</p></div>
+<div id="cs" aria-label="Capacidad calorífica específica en J/g·°C"></div></div></section>
+
+<section><h2>Las cuatro leyes</h2><div class="laws">
+<div class="law"><h3>Ley cero</h3><div class="eq">A~B y B~C ⇒ A~C</div><p><em>Equilibrio térmico.</em> Si dos cuerpos están en equilibrio con un tercero, lo están entre sí. Es la base del termómetro.</p><p><em>En tu taza:</em> el termómetro marca lo mismo que la bebida cuando ambos llegan al equilibrio.</p></div>
+<div class="law"><h3>Primera ley</h3><div class="eq">ΔU = Q − W</div><p><em>Conservación de la energía.</em> La energía interna cambia por el calor que entra y el trabajo que sale.</p><p><em>En tu taza:</em> la energía que pierde la bebida no desaparece, calienta el aire de la habitación.</p></div>
+<div class="law"><h3>Segunda ley</h3><div class="eq">ΔS ≥ 0</div><p><em>Dirección natural.</em> El calor fluye solo de lo caliente a lo frío, y la entropía de un sistema aislado no disminuye.</p><p><em>En tu taza:</em> el café se enfría; nunca se calienta solo con el aire frío.</p></div>
+<div class="law"><h3>Tercera ley</h3><div class="eq">T → 0 K, S → 0</div><p><em>Cero absoluto.</em> Ningún proceso finito logra enfriar un sistema hasta 0 K.</p><p><em>En tu taza:</em> la bebida solo se acerca a la temperatura ambiente, nunca a 0 K.</p></div></div></section>
+<footer>Ejemplo del simulador con agua (c = 4.186 J/g·°C, 1 mL ≈ 1 g). Las constantes k de cada recipiente son valores didácticos aproximados.</footer></div>
+<script>
+const $=i=>document.getElementById(i),K={vidrio:[.045,"Vaso de vidrio"],ceramica:[.03,"Taza de cerámica"],espuma:[.012,"Vaso de espuma con tapa"],termo:[.0015,"Termo de acero al vacío"]};
+let t=0,run=false,last=0;
+const g=()=>({s:$("sel").value,T0:+$("iT").value,Ta:+$("iA").value,V:+$("iV").value,sp:+$("sp").value});
+const kk=(s,V)=>K[s][0]*Math.sqrt(250/V);
+const fmt=m=>m>=60?Math.floor(m/60)+" h "+Math.round(m%60)+" min":Math.round(m)+" min";
+const t60=(k,T0,Ta)=>T0<=60?"ya tibia":Ta>=60?"nunca":fmt(Math.log((T0-Ta)/(60-Ta))/k);
+function upd(){const{s,T0,Ta,V}=g(),k=kk(s,V),T=Ta+(T0-Ta)*Math.exp(-k*t);
+$("oT").textContent=T0+" °C";$("oA").textContent=Ta+" °C";$("oV").textContent=V+" mL";
+$("rT").textContent=T.toFixed(1)+" °C";$("rt").textContent=fmt(t);
+$("rQ").textContent=(V*4.186*(T0-T)/1000).toFixed(1);$("rP").textContent=(V*4.186*k*(T-Ta)/60).toFixed(0);
+const f=Math.max(0,Math.min(1,(T-Ta)/(95-Ta||1)));$("liq").setAttribute("fill","hsl("+(205-197*f)+",70%,"+(48+8*(1-f))+"%)");
+$("steam").style.opacity=Math.max(0,Math.min(1,(T-45)/40));
+$("cmp").innerHTML=Object.keys(K).map(c=>"<tr><td>"+K[c][1]+"</td><td>"+t60(kk(c,V),T0,Ta)+"</td></tr>").join("");draw(k,T0,Ta,T)}
+function draw(k,T0,Ta,T){const c=$("ch"),d=devicePixelRatio||1,w=c.clientWidth,h=c.clientHeight;c.width=w*d;c.height=h*d;const x=c.getContext("2d");x.scale(d,d);
+const cs=getComputedStyle(document.documentElement),col=n=>cs.getPropertyValue(n).trim(),tm=Math.min(3.2/k,1440),L=40,B=24,P=8,
+X=u=>L+(w-L-P)*u/tm,Y=v=>P+(h-P-B)*(1-(v-Ta+5)/(T0-Ta+10));
+x.font="12px system-ui";x.fillStyle=col("--mute");x.strokeStyle=col("--line");x.lineWidth=1;
+for(let i=0;i<=4;i++){const v=Ta-5+(T0-Ta+10)*i/4,y=P+(h-P-B)*(1-i/4);x.beginPath();x.moveTo(L,y);x.lineTo(w-P,y);x.stroke();x.fillText(Math.round(v)+"°",4,y+4)}
+for(let i=0;i<=3;i++)x.fillText(fmt(tm*i/3),L+(w-L-P-34)*i/3,h-6);
+x.setLineDash([5,4]);x.strokeStyle=col("--mute");if(60>Ta&&60<T0){x.beginPath();x.moveTo(L,Y(60));x.lineTo(w-P,Y(60));x.stroke()}
+x.strokeStyle=col("--cold");x.beginPath();x.moveTo(L,Y(Ta));x.lineTo(w-P,Y(Ta));x.stroke();x.setLineDash([]);
+x.strokeStyle=col("--hot");x.lineWidth=3;x.beginPath();for(let i=0;i<=120;i++){const u=tm*i/120,v=Ta+(T0-Ta)*Math.exp(-k*u);i?x.lineTo(X(u),Y(v)):x.moveTo(X(u),Y(v))}x.stroke();
+x.fillStyle=col("--ink");x.beginPath();x.arc(X(Math.min(t,tm)),Y(T),6,0,7);x.fill()}
+function loop(n){if(run){const dt=Math.min((n-last)/1000,.1);t+=dt*g().sp;last=n;const k=kk(g().s,g().V);if(t>Math.min(6/k,2880)){t=Math.min(6/k,2880);run=false;$("go").textContent="Iniciar"}upd();requestAnimationFrame(loop)}}
+$("go").onclick=()=>{run=!run;$("go").textContent=run?"Pausar":"Iniciar";if(run){last=performance.now();requestAnimationFrame(loop)}};
+$("rs").onclick=()=>{run=false;t=0;$("go").textContent="Iniciar";upd()};
+["sel","iT","iA","iV"].forEach(i=>$(i).oninput=()=>{t=0;upd()});
+addEventListener("resize",upd);matchMedia("(prefers-color-scheme:dark)").onchange=upd;
+const cv=$("cv");cv.oninput=()=>{const c=+cv.value;$("cC").textContent=c;$("cK").textContent=(c+273.15).toFixed(2);$("cF").textContent=(c*9/5+32).toFixed(1)};
+$("cs").innerHTML=[["Agua",4.186],["Aceite",2.0],["Aluminio",.90],["Hierro",.45],["Cobre",.385]].map(a=>'<div class="bar"><span>'+a[0]+'</span><i style="width:'+a[1]/4.186*100+'%"></i><b>'+a[1]+'</b></div>').join("");
+upd();
+</script></body></html>
